@@ -17,6 +17,7 @@
     "baseUrl": ".",
     "paths": {}
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp"],
+  "include": [ "./**/*.ts" ]
 }
   

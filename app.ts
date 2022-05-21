@@ -1,21 +1,17 @@
 import express from 'express'
+import { router as apiKeyRouter } from './routes/api-key-service'
 
 const app = express()
 
 // Apply middlewares
 app.use(express.json())
 
-// Apply routes
-// app.use(express.json())
+// Routes
+app.use('/apikey', apiKeyRouter)
 
 // Public route
 app.get('/', (req, res) => {
     res.send("Hello World, this is a public resource")
-})
-
-// Protected route
-app.get('/protected', (req, res) => {
-    res.send("This is a supposed to be a protected route")
 })
 
 // Start listening to requests

@@ -1,7 +1,6 @@
 
-// Registered users for api-key
 /*
-    Format: 
+    Item format: 
     {
         id: "l3g7tq51",
         api_key: 'c0bd2ba0-5f40-4f95-9dbf-3f8b58177927',
@@ -10,4 +9,16 @@
         usages: [{ date: '2020-05-08', count: 17 }],
     }
 */
+// Registered users for api-key
 export const apiKeyUsers = []
+
+/*
+    Item format: 
+    {
+        id: "l3g7tq51",
+        email: 'user@email.com',
+        password: '2b$10$CntnKq3xNN5gJv231CaGUeKT3UM/ZdJTUWIrYHNkaaPEhUrL0IiH2'
+    }
+*/
+// Registered users for basic auth
+export const basicAuthUsers = []

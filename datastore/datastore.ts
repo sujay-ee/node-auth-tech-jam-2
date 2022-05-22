@@ -33,10 +33,6 @@ export function getNumUsers() {
     return users.length
 }
 
-export function findUser(apiKey: String, host: String) {
-    return users.find((u) => u.api_key === apiKey && u.host === host)
-}
-
 export function findUserByEmail(email: String) {
     return users.find((u) => u.email === email)
 }

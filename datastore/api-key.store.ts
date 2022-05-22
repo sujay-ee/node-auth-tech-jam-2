@@ -2,7 +2,6 @@ import * as datastore from './datastore'
 export { 
     getAllUsers, 
     getNumUsers, 
-    findUser, 
     findUserByEmail, 
     removeOldestUser 
 } from './datastore'
@@ -24,19 +23,24 @@ function createNewUser(apiKey: String, email: String, host: String) {
     }
 }
 
+export function findUser(apiKey: String, host: String) {
+    return datastore.getAllUsers()
+        .find((u) => u.api_key === apiKey && u.host === host)
+}
+
 export function addUser(apiKey: String, email: String, host: String) {
     const user = createNewUser(apiKey, email, host)
     return datastore.addUser(user)
 }
 
 export function getNumUsagesToday(apiKey: String, host: String) {
-    const usages = datastore.findUser(apiKey, host).usages
+    const usages = findUser(apiKey, host).usages
     return usages.find((u) => u.date === getDateToday()).count
 }
 
 export function incrementNumUsagesToday(apiKey: String, host: String) {
     const dateToday = getDateToday()
-    const user = datastore.findUser(apiKey, host)
+    const user = findUser(apiKey, host)
 
     // User not found
     if (!user)

@@ -1,5 +1,6 @@
 import express from 'express'
 import { router as apiKeyRouter } from './routes/api-key.route'
+import { router as basicAuthRouter } from './routes/basic-auth.route'
 
 const app = express()
 
@@ -8,6 +9,7 @@ app.use(express.json())
 
 // Routes
 app.use('/apikey', apiKeyRouter)
+app.use('/basicauth', basicAuthRouter)
 
 // Public route
 app.get('/', (req, res) => {

@@ -31,9 +31,9 @@ function isKeyValid(apiKey: String, host: String) {
 
 function hasAccess(apiKey: String, host: String) {
 
-    const numUsages = getNumUsagesToday()
+    const numUsages = getNumUsagesToday(apiKey, host)
 
-    // Hasn't been queried yet
+    // Api hasn't been queried yet
     if (!numUsages)
         return true
 
@@ -59,12 +59,16 @@ export function validateKey(req, res, next) {
     const apiKey = req.header('x-api-key')
 
     // Invalidate the api key
-    if (!isKeyValid(apiKey, host))
+    if (!isKeyValid(apiKey, host)) {
         res.status(403).send('You are not allowed to access this resource')
+        return
+    }
     
     // Invalidate max queries
-    if (!hasAccess(apiKey, host))
+    if (!hasAccess(apiKey, host)) {
         res.status(429).send('API limit exceeded')
+        return
+    }
     
     next()
 }

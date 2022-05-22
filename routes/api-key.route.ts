@@ -14,6 +14,7 @@ router.post('/register', (req, res, next) => {
     const host = req.body.origin
 
     // Check if the user already exists
+    // TODO add this check to `canCreateUser` function in service
     if (findUserByEmail(email)) {
         res.status(400).json({ msg: "User already exists" })
         return
@@ -23,7 +24,7 @@ router.post('/register', (req, res, next) => {
     res.status(201).json({ data: user })
 })
 
-router.get('/users', validateKey, (req, res) => {
+router.get('/users', (req, res) => {
     res.json({ users: getAllUsers() })
 })
 

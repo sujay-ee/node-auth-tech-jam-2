@@ -1,8 +1,14 @@
-import { apiKeyUsers as users } from '../shared/data'
+import * as datastore from './datastore'
+export { 
+    getAllUsers, 
+    getNumUsers, 
+    findUser, 
+    findUserByEmail, 
+    removeOldestUser 
+} from './datastore'
 
-function getRandomUserId() {
-    return Date.now().toString(36)
-}
+// Init user data type
+datastore.setUserType(datastore.UserType.API_KEY)
 
 function getDateToday() {
     return new Date().toISOString().split('T')[0]
@@ -10,7 +16,7 @@ function getDateToday() {
 
 function createNewUser(apiKey: String, email: String, host: String) {
     return {
-        id: getRandomUserId(),
+        id: datastore.getRandomUserId(),
         api_key: apiKey,
         email: email,
         host: host,
@@ -18,42 +24,19 @@ function createNewUser(apiKey: String, email: String, host: String) {
     }
 }
 
-export function getAllUsers() {
-    return users
-}
-
-export function getNumUsers() {
-    return users.length
-}
-
-export function findUser(apiKey: String, host: String) {
-    return users.find((u) => u.api_key === apiKey && u.host === host)
-}
-
-export function findUserByEmail(email: String) {
-    return users.find((u) => u.email === email)
-}
-
 export function addUser(apiKey: String, email: String, host: String) {
     const user = createNewUser(apiKey, email, host)
-    users.push(user)
-
-    return user
+    return datastore.addUser(user)
 }
 
-export function removeOldestUser() {
-    // .shift() removes the leftmost item
-    users.shift()
-}
-
-export function getNumUsagesToday() {
-    const dateToday = getDateToday()
-    return users.find((user) => user.usages.find((u) => u.date === dateToday))
+export function getNumUsagesToday(apiKey: String, host: String) {
+    const usages = datastore.findUser(apiKey, host).usages
+    return usages.find((u) => u.date === getDateToday()).count
 }
 
 export function incrementNumUsagesToday(apiKey: String, host: String) {
     const dateToday = getDateToday()
-    const user = findUser(apiKey, host)
+    const user = datastore.findUser(apiKey, host)
 
     // User not found
     if (!user)

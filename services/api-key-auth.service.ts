@@ -5,7 +5,7 @@ import {
     addUser, 
     removeOldestUser, 
     getNumUsagesToday
-} from '../datastore/api-key-store'
+} from '../datastore/api-key.store'
 
 const MAX_NUM_REGISTERED_USERS = 10
 const MAX_REQUESTS_PER_DAY = 10

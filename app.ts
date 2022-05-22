@@ -1,5 +1,5 @@
 import express from 'express'
-import { router as apiKeyRouter } from './routes/api-key-service'
+import { router as apiKeyRouter } from './routes/api-key.route'
 
 const app = express()
 

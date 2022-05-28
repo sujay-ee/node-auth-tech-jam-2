@@ -1,6 +1,5 @@
 import * as express from 'express'
-import { getAllUsers } from '../datastore/basic-auth.store'
-import { validateUser, registerNewUser } from '../services/basic-auth.service'
+import { getAllUsers, validateUser, registerNewUser } from '../services/basic-auth.service'
 
 export const router = express.Router()
 

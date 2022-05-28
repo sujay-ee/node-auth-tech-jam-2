@@ -1,48 +1,58 @@
 import { apiKeyUsers, basicAuthUsers } from '../shared/data'
 
-let users = []
+const MAX_NUM_REGISTERED_USERS = 10
 
 export enum UserType {
     API_KEY, 
     BASIC_AUTH, 
-    OAUTH
+    JWT
 }
 
-export function setUserType(userType: UserType) {
-    switch(+userType) {
-        case UserType.API_KEY:
-            users = [...apiKeyUsers]
-            break
-        case UserType.BASIC_AUTH:
-            users = [...basicAuthUsers]
-            break
-        case UserType.OAUTH:
-            break
+export class DataStore {
+    users: Array<any>
+
+    constructor(userType: UserType) {
+        this.users = []
+
+        switch(+userType) {
+            case UserType.API_KEY:
+                this.users = [...apiKeyUsers]
+                break
+            case UserType.BASIC_AUTH:
+                this.users = [...basicAuthUsers]
+                break
+            case UserType.JWT:
+                break
+        }
     }
-}
 
-export function getRandomUserId() {
-    return Date.now().toString(36)
-}
+    getRandomUserId() {
+        return Date.now().toString(36)
+    }
 
-export function getAllUsers() {
-    return users
-}
+    getAllUsers() {
+        return this.users
+    }
 
-export function getNumUsers() {
-    return users.length
-}
+    getNumUsers() {
+        return this.users.length
+    }
 
-export function findUserByEmail(email: String) {
-    return users.find((u) => u.email === email)
-}
+    findUserByEmail(email: String) {
+        return this.users.find((u) => u.email === email)
+    }
 
-export function addUser(user) {
-    users.push(user)
-    return user
-}
+    addUserToDb(user: Object) {
+        this.users.push(user)
+        return user
+    }
 
-export function removeOldestUser() {
-    // .shift() removes the leftmost item
-    users.shift()
+    removeOldestUser() {
+        // .shift() removes the leftmost item
+        this.users.shift()
+    }
+
+    isUserListFull() {
+        return this.getNumUsers() >= MAX_NUM_REGISTERED_USERS
+    }
 }

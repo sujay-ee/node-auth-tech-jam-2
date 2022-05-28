@@ -1,6 +1,11 @@
 import * as express from 'express'
-import { getAllUsers, findUserByEmail, incrementNumUsagesToday } from '../datastore/api-key.store'
-import { registerNewUser, validateKey } from '../services/api-key-auth.service'
+import { 
+    findUserByEmail, 
+    getAllUsers, 
+    registerNewUser, 
+    validateKey, 
+    incrementNumUsagesToday 
+} from '../services/api-key-auth.service'
 
 export const router = express.Router()
 

@@ -1,14 +1,18 @@
+import { ApiKeyStore } from '../datastore/api-key.store'
 import { v4 as uuidv4, validate } from 'uuid'
-import { 
-    getNumUsers, 
-    findUser, 
-    addUser, 
-    removeOldestUser, 
-    getNumUsagesToday
-} from '../datastore/api-key.store'
 
-const MAX_NUM_REGISTERED_USERS = 10
+// Max protected api query limit per day
 const MAX_REQUESTS_PER_DAY = 10
+
+// Init api key datastore
+const datastore = new ApiKeyStore()
+
+// Datastore exports
+export const getAllUsers = () => datastore.getAllUsers()
+export const findUserByEmail = (email) => datastore.findUserByEmail(email)
+export function incrementNumUsagesToday(apiKey: String, host: String) {
+    return datastore.incrementNumUsagesToday(apiKey, host)
+}
 
 function getNewApiKey() {
     return uuidv4()
@@ -21,7 +25,7 @@ function isKeyValid(apiKey: String, host: String) {
         return false
     
     // Ensure that the user exists
-    const user = findUser(apiKey, host)
+    const user = datastore.findUser(apiKey, host)
     if (!user)
         return false
     
@@ -31,7 +35,7 @@ function isKeyValid(apiKey: String, host: String) {
 
 function hasAccess(apiKey: String, host: String) {
 
-    const numUsages = getNumUsagesToday(apiKey, host)
+    const numUsages = datastore.getNumUsagesToday(apiKey, host)
 
     // Api hasn't been queried yet
     if (!numUsages)
@@ -47,11 +51,11 @@ function hasAccess(apiKey: String, host: String) {
 export function registerNewUser(email: String, host: String) {
 
     // Remove the oldest users when user limit is reached
-    if (getNumUsers() >= MAX_NUM_REGISTERED_USERS)
-        removeOldestUser()
+    if (datastore.isUserListFull())
+        datastore.removeOldestUser()
     
     // Add new user to registered users
-    return addUser(getNewApiKey(), email, host)
+    return datastore.addUser(getNewApiKey(), email, host)
 }
 
 export function validateKey(req, res, next) {
@@ -60,7 +64,7 @@ export function validateKey(req, res, next) {
 
     // Invalidate the api key
     if (!isKeyValid(apiKey, host)) {
-        res.status(403).send('You are not allowed to access this resource')
+        res.status(401).send('You are not allowed to access this resource')
         return
     }
     

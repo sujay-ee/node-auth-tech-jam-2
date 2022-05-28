@@ -1,12 +1,11 @@
-import { 
-    getNumUsers, 
-    addUser, 
-    removeOldestUser,
-    findUserByEmail
-} from '../datastore/basic-auth.store'
+import { BasicAuthStore } from '../datastore/basic-auth.store'
 import * as bcrypt from 'bcrypt'
 
-const MAX_NUM_REGISTERED_USERS = 10
+// Init the basic auth datastore
+const datastore = new BasicAuthStore()
+
+// Datastore exports
+export const getAllUsers = () => datastore.getAllUsers()
 
 async function isPasswordValid(passString: String, passEncrypted: String) {
     return await bcrypt.compare(passString, passEncrypted)
@@ -14,12 +13,12 @@ async function isPasswordValid(passString: String, passEncrypted: String) {
 
 export async function validateUser(req, res, next) {
     const email = req.body.email
-    const user = findUserByEmail(email)
+    const user = datastore.findUserByEmail(email)
 
     // User doesn't exist
-    // Status code could 404
+    // Status code could be 404
     if (!user) {
-        res.status(400).send('Invalid credentials')
+        res.status(401).send('Invalid credentials')
         return
     }
 
@@ -27,7 +26,7 @@ export async function validateUser(req, res, next) {
     const password = req.body.password
     const isValid = await isPasswordValid(password, user.password)
     if (!isValid) {
-        res.status(403).send('You are not allowed to access this resource')
+        res.status(401).send('You are not allowed to access this resource')
         return
     }
 
@@ -37,11 +36,11 @@ export async function validateUser(req, res, next) {
 export async function registerNewUser(email: String, password: String) {
 
     // Remove the oldest users when user limit is reached
-    if (getNumUsers() >= MAX_NUM_REGISTERED_USERS)
-        removeOldestUser()
+    if (datastore.isUserListFull())
+        datastore.removeOldestUser()
 
     // Add new user to registered users
     const hashSalt = 10
     const hashedPassword = await bcrypt.hash(password, hashSalt)
-    return addUser(email, hashedPassword)
+    return datastore.addUser(email, hashedPassword)
 }

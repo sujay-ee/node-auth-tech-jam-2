@@ -1,4 +1,4 @@
-import { StatusCodes } from 'shared/statuscodes'
+import { StatusCodes } from '../shared/statuscodes'
 import { UserType, DataStore } from './datastore'
 
 export class ApiKeyStore extends DataStore {

@@ -1,6 +1,6 @@
 import { v4 as uuidv4, validate } from 'uuid'
 import { ApiKeyStore } from '../datastore/api-key.store'
-import { StatusCodes } from 'shared/statuscodes'
+import { StatusCodes } from '../shared/statuscodes'
 
 // Max protected api query limit per day
 const MAX_REQUESTS_PER_DAY = 10
@@ -51,7 +51,8 @@ function hasAccess(apiKey: String, host: String) {
 export function registerNewUser(email: String, host: String) {
 
     // Check if the user already exists
-    if (datastore.findUserByEmail(email)) {
+    const user = datastore.findUserByEmail(email)
+    if (user) {
         return { 
             status: StatusCodes.EMAIL_ALREADY_EXISTS, 
             user: null 
@@ -70,13 +71,14 @@ export function registerNewUser(email: String, host: String) {
 }
 
 export function validateKey(req, res, next) {
-    const host = req.headers.origin
+    const host = req.headers.host
     const apiKey = req.header('x-api-key')
 
     // Invalidate the api key
     if (!isKeyValid(apiKey, host)) {
         res.status(401).json({
-            status: StatusCodes.RESOURCE_ACCESS_DENIED
+            status: StatusCodes.RESOURCE_ACCESS_DENIED,
+            data: null
         })
         return
     }
@@ -84,7 +86,8 @@ export function validateKey(req, res, next) {
     // Invalidate max queries
     if (!hasAccess(apiKey, host)) {
         res.status(429).json({
-            status: StatusCodes.API_LIMIT_EXCEEDED
+            status: StatusCodes.API_LIMIT_EXCEEDED,
+            data: null
         })
         return
     }

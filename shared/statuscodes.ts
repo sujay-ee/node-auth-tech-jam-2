@@ -11,11 +11,13 @@ export enum StatusCodes {
 
     // Api key errors
     API_LIMIT_EXCEEDED = -2001,
+    API_KEY_EMPTY = -2002,
 
     // Basic Auth errors
 
     // Jwt error codes
-    INVALID_SESSION_TOKEN = -4001
+    TOKEN_BAD = -4001,
+    TOKEN_EMPTY = -4002
 
 }
 

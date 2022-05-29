@@ -1,5 +1,5 @@
 import { BasicAuthStore } from '../datastore/basic-auth.store'
-import { StatusCodes } from 'shared/statuscodes'
+import { StatusCodes } from '../shared/statuscodes'
 import * as bcrypt from 'bcrypt'
 
 // Init the basic auth datastore

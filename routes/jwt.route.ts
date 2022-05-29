@@ -1,10 +1,10 @@
 import * as express from 'express'
-import { StatusCodes } from 'shared/statuscodes'
+import { isValid, StatusCodes } from '../shared/statuscodes'
 import { 
     getAllUsers, 
     registerNewUser, 
     signIn,
-    findUserByEmail
+    validateJwt
 } from '../services/jwt.service'
 
 export const router = express.Router()
@@ -16,34 +16,35 @@ router.get('/', (req, res) => {
     })
 })
 
-router.post('/register', (req, res) => {
+router.post('/register', async (req, res) => {
     const { email, password, role } = req.body
 
     // Input data validation
-    if (!email || !password || !role) {
+    if (!email || !password || (!role && role != 0)) {
         res.status(400).json({ 
-            status: StatusCodes.INVALID_DATA_FORMAT 
-        })
-        return
-    }
-
-    // Check if user already exists
-    if (findUserByEmail(email)) {
-        res.status(400).json({ 
-            status: StatusCodes.EMAIL_ALREADY_EXISTS 
+            status: StatusCodes.INVALID_DATA_FORMAT,
+            data: null
         })
         return
     }
 
     // Register the new user
-    const user = registerNewUser(email, password, role)
+    const { status, data } = await registerNewUser(email, password, role)
+    if (!isValid(status)) {
+        res.status(400).json({
+            status: status,
+            data: null
+        })
+        return
+    }
+
     res.status(201).json({ 
-        data: user,
+        data: { user: data },
         status: StatusCodes.SUCCESS
     })
 })
 
-router.post('/sign_in', (req, res) => {
+router.post('/sign_in', async (req, res) => {
     const { email, password } = req.body
 
     // Input data validation
@@ -54,14 +55,31 @@ router.post('/sign_in', (req, res) => {
         return
     }
 
-    const token = signIn(email, password)
-    res.send(token)
+    const { status, token } = await signIn(email, password)
+    if (!isValid(status)) {
+        res.status(400).json({
+            status: status,
+            data: null
+        })
+        return
+    }
+
+    res.json({
+        status: StatusCodes.SUCCESS,
+        data: { token }
+    })
 })
 
 router.get('/users', (req, res) => {
-    res.json({ users: getAllUsers() })
+    res.json({ 
+        status: StatusCodes.SUCCESS,
+        data: { users: getAllUsers() }
+     })
 })
 
-router.get('/protected', (req, res) => {
-    res.send("This is a supposed to be a protected route")
+router.get('/protected', validateJwt, (req, res, next) => {
+    res.json({
+        status: StatusCodes.SUCCESS,
+        data: { msg: "This is a protected data" }
+    })
 })

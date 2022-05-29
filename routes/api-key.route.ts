@@ -17,8 +17,8 @@ router.get('/', (req, res) => {
 })
 
 router.post('/register', (req, res) => {
+    const host = req.headers.host
     const email = req.body.email
-    const host = req.body.origin
 
     // Check if input data is valid
     if (!email || !host) {
@@ -55,13 +55,14 @@ router.get('/users', (req, res) => {
 })
 
 router.get('/protected', validateKey, (req, res) => {
-    const host = req.headers.origin
+    const host = req.headers.host
     const apiKey = req.header('x-api-key')
 
     // Check if input data is valid
+    // Control shouldn't reach here when apikey is empty
     if (!host || !apiKey) {
         res.status(400).json({ 
-            status: StatusCodes.EMAIL_ALREADY_EXISTS,
+            status: StatusCodes.API_KEY_EMPTY,
             data: null
         })
         return

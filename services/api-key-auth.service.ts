@@ -1,5 +1,6 @@
-import { ApiKeyStore } from '../datastore/api-key.store'
 import { v4 as uuidv4, validate } from 'uuid'
+import { ApiKeyStore } from '../datastore/api-key.store'
+import { StatusCodes } from 'shared/statuscodes'
 
 // Max protected api query limit per day
 const MAX_REQUESTS_PER_DAY = 10
@@ -64,13 +65,17 @@ export function validateKey(req, res, next) {
 
     // Invalidate the api key
     if (!isKeyValid(apiKey, host)) {
-        res.status(401).send('You are not allowed to access this resource')
+        res.status(401).json({
+            status: StatusCodes.RESOURCE_ACCESS_DENIED
+        })
         return
     }
     
     // Invalidate max queries
     if (!hasAccess(apiKey, host)) {
-        res.status(429).send('API limit exceeded')
+        res.status(429).json({
+            status: StatusCodes.API_LIMIT_EXCEEDED
+        })
         return
     }
     

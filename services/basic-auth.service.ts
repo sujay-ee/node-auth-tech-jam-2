@@ -1,11 +1,13 @@
 import { BasicAuthStore } from '../datastore/basic-auth.store'
 import * as bcrypt from 'bcrypt'
+import { StatusCodes } from 'shared/statuscodes'
 
 // Init the basic auth datastore
 const datastore = new BasicAuthStore()
 
 // Datastore exports
 export const getAllUsers = () => datastore.getAllUsers()
+export const findUserByEmail = (email: String) => datastore.findUserByEmail(email)
 
 async function isPasswordValid(passString: String, passEncrypted: String) {
     return await bcrypt.compare(passString, passEncrypted)
@@ -16,9 +18,10 @@ export async function validateUser(req, res, next) {
     const user = datastore.findUserByEmail(email)
 
     // User doesn't exist
-    // Status code could be 404
     if (!user) {
-        res.status(401).send('Invalid credentials')
+        res.status(404).json({
+            status: StatusCodes.USER_NOT_REGISTERED
+        })
         return
     }
 
@@ -26,7 +29,9 @@ export async function validateUser(req, res, next) {
     const password = req.body.password
     const isValid = await isPasswordValid(password, user.password)
     if (!isValid) {
-        res.status(401).send('You are not allowed to access this resource')
+        res.status(401).json({
+            status: StatusCodes.RESOURCE_ACCESS_DENIED
+        })
         return
     }
 

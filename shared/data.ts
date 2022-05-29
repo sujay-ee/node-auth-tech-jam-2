@@ -22,3 +22,15 @@ export const apiKeyUsers = []
 */
 // Registered users for basic auth
 export const basicAuthUsers = []
+
+/*
+    Item format: 
+    {
+        id: "l3g7tq51",
+        email: 'user@email.com'
+        password: '',
+        role: ''
+    }
+*/
+// Registered users for jwt auth
+export const jwtUsers = []

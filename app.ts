@@ -1,15 +1,17 @@
 import express from 'express'
 import { router as apiKeyRouter } from './routes/api-key.route'
 import { router as basicAuthRouter } from './routes/basic-auth.route'
+import { router as jwtRouter } from './routes/jwt.route'
 
 const app = express()
 
-// Apply middlewares
+// Middlewares
 app.use(express.json())
 
 // Routes
 app.use('/apikey', apiKeyRouter)
 app.use('/basicauth', basicAuthRouter)
+app.use('/jwt', jwtRouter)
 
 // Public route
 app.get('/', (req, res) => {

@@ -1,4 +1,4 @@
-import { apiKeyUsers, basicAuthUsers } from '../shared/data'
+import { apiKeyUsers, basicAuthUsers, jwtUsers } from '../shared/data'
 
 const MAX_NUM_REGISTERED_USERS = 10
 
@@ -22,6 +22,7 @@ export class DataStore {
                 this.users = [...basicAuthUsers]
                 break
             case UserType.JWT:
+                this.users = [...jwtUsers]
                 break
         }
     }

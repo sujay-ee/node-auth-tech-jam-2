@@ -2,10 +2,9 @@ import * as express from 'express'
 import { 
     getAllUsers, 
     validateUser, 
-    registerNewUser,
-    findUserByEmail
+    registerNewUser
 } from '../services/basic-auth.service'
-import { StatusCodes } from '../shared/statuscodes'
+import { isValid, StatusCodes } from '../shared/statuscodes'
 
 export const router = express.Router()
 
@@ -27,17 +26,18 @@ router.post('/register', async (req, res) => {
         return
     }
 
-    // Check if the user already exists
-    if (findUserByEmail(email)) {
+    // Register a new user
+    const { status, data } = await registerNewUser(email, password)
+    if (!isValid(status)) {
         res.status(400).json({ 
-            status: StatusCodes.EMAIL_ALREADY_EXISTS 
+            status: status
         })
         return
     }
 
-    const user = await registerNewUser(email, password)
+    // Return the registered user
     res.status(201).json({ 
-        data: user, 
+        data, 
         status: StatusCodes.SUCCESS 
     })
 })

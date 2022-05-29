@@ -1,12 +1,11 @@
 import * as express from 'express'
 import { 
-    findUserByEmail, 
     getAllUsers, 
     registerNewUser, 
     validateKey, 
     incrementNumUsagesToday 
 } from '../services/api-key-auth.service'
-import { StatusCodes } from '../shared/statuscodes'
+import { isValid, StatusCodes } from '../shared/statuscodes'
 
 export const router = express.Router()
 
@@ -24,31 +23,34 @@ router.post('/register', (req, res) => {
     // Check if input data is valid
     if (!email || !host) {
         res.status(400).json({ 
-            status: StatusCodes.INVALID_DATA_FORMAT 
-        })
-        return
-    }
-
-    // Check if the user already exists
-    if (findUserByEmail(email)) {
-        res.status(400).json({ 
-            status: StatusCodes.EMAIL_ALREADY_EXISTS 
+            status: StatusCodes.INVALID_DATA_FORMAT,
+            data: null
         })
         return
     }
 
     // Register the new user
-    const user = registerNewUser(email, host)
+    const { status, user } = registerNewUser(email, host)
+    if (!isValid(status)) {
+        // TODO All invalidations assumed to be bad-request 
+        res.status(400).json({ 
+            status: StatusCodes.EMAIL_ALREADY_EXISTS,
+            data: null
+        })
+        return
+    }
+
+    // New user created
     res.status(201).json({ 
-        data: user, 
-        status: StatusCodes.SUCCESS 
+        status: StatusCodes.SUCCESS,
+        data: user
     })
 })
 
 router.get('/users', (req, res) => {
     res.json({ 
-        data: { users: getAllUsers() }, 
-        status: StatusCodes.SUCCESS 
+        status: StatusCodes.SUCCESS,
+        data: { users: getAllUsers() }
     })
 })
 
@@ -59,24 +61,26 @@ router.get('/protected', validateKey, (req, res) => {
     // Check if input data is valid
     if (!host || !apiKey) {
         res.status(400).json({ 
-            status: StatusCodes.EMAIL_ALREADY_EXISTS 
+            status: StatusCodes.EMAIL_ALREADY_EXISTS,
+            data: null
         })
         return
     }
 
     const ret = incrementNumUsagesToday(apiKey, host)
-    if (!ret) {
+    if (!isValid(ret)) {
         // Control shouldn't reach here,
         // This means that a request was able to get past 
         // the api-key validation using a bad api-key
         res.status(404).json({
-            status: StatusCodes.USER_NOT_REGISTERED
+            status: ret,
+            data: null
         })
         return
     }
 
     res.json({
-        data: { msg: "This is protected data" },
-        status: StatusCodes.SUCCESS
+        status: StatusCodes.SUCCESS,
+        data: { msg: "This is protected data" }
     })
 })

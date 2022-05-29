@@ -10,6 +10,7 @@ const datastore = new JwtStore()
 
 // Datastore exports
 export const getAllUsers = () => datastore.getAllUsers()
+export const findUserByEmail = (email) => datastore.findUserByEmail(email)
 
 export function registerNewUser(email: String, password: String, role: number) {
 
@@ -22,10 +23,7 @@ export function registerNewUser(email: String, password: String, role: number) {
 }
 
 export function signIn(email: String, password: String) {
-    const jwtHeader = {
-        algorithm: "HS256",
-        expiresIn: JWT_TTL,
-    }
+    const jwtHeader = { algorithm: "HS256", expiresIn: JWT_TTL }
     const token = jwt.sign({ email }, JWT_SECRET_KEY, jwtHeader)
     return token
 }

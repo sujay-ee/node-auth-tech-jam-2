@@ -1,3 +1,4 @@
+import { StatusCodes } from 'shared/statuscodes'
 import { UserType, DataStore } from './datastore'
 
 export class ApiKeyStore extends DataStore {
@@ -41,17 +42,18 @@ export class ApiKeyStore extends DataStore {
 
         // User not found
         if (!user)
-            return
+            return StatusCodes.USER_NOT_REGISTERED
 
         // First entry of the day
         const usageIndex = user.usages.findIndex((u) => u.date === dateToday)
         if (usageIndex == -1) {
             user.usages.push({ date: dateToday, count: 1 })
-            return
+            return StatusCodes.SUCCESS
         }
 
         // Update the existing usage entry, then return it
-        return ++ user.usages[usageIndex].count
+        user.usages[usageIndex].count ++
+        return StatusCodes.SUCCESS
     }
 
 }

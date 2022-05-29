@@ -1,24 +1,59 @@
 import * as express from 'express'
-import { getAllUsers, registerNewUser, signIn } from '../services/jwt.service'
+import { StatusCodes } from 'shared/statuscodes'
+import { 
+    getAllUsers, 
+    registerNewUser, 
+    signIn,
+    findUserByEmail
+} from '../services/jwt.service'
 
 export const router = express.Router()
 
 router.get('/', (req, res) => {
-    res.send("JWT homepage")
+    res.json({
+        data: { msg: "JWT homepage" },
+        status: StatusCodes.SUCCESS
+    })
 })
 
 router.post('/register', (req, res) => {
-    const email = req.body.email
-    const password = req.body.password
-    const role = req.body.role
+    const { email, password, role } = req.body
 
+    // Input data validation
+    if (!email || !password || !role) {
+        res.status(400).json({ 
+            status: StatusCodes.INVALID_DATA_FORMAT 
+        })
+        return
+    }
+
+    // Check if user already exists
+    if (findUserByEmail(email)) {
+        res.status(400).json({ 
+            status: StatusCodes.EMAIL_ALREADY_EXISTS 
+        })
+        return
+    }
+
+    // Register the new user
     const user = registerNewUser(email, password, role)
-    res.status(201).json({ data: user })
+    res.status(201).json({ 
+        data: user,
+        status: StatusCodes.SUCCESS
+    })
 })
 
 router.post('/sign_in', (req, res) => {
-    const email = req.body.email
-    const password = req.body.password
+    const { email, password } = req.body
+
+    // Input data validation
+    if (!email || !password) {
+        res.status(400).json({ 
+            status: StatusCodes.INVALID_DATA_FORMAT 
+        })
+        return
+    }
+
     const token = signIn(email, password)
     res.send(token)
 })

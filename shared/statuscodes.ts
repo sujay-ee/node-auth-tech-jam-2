@@ -1,4 +1,3 @@
-
 export enum StatusCodes {
 
     SUCCESS = 0,
@@ -11,10 +10,15 @@ export enum StatusCodes {
     USER_NOT_REGISTERED = -1005,
 
     // Api key errors
-    API_LIMIT_EXCEEDED = -2001
+    API_LIMIT_EXCEEDED = -2001,
 
     // Basic Auth errors
 
     // Jwt error codes
+    INVALID_SESSION_TOKEN = -4001
 
+}
+
+export function isValid(status: StatusCodes) {
+    return status == StatusCodes.SUCCESS
 }

@@ -10,7 +10,6 @@ const datastore = new ApiKeyStore()
 
 // Datastore exports
 export const getAllUsers = () => datastore.getAllUsers()
-export const findUserByEmail = (email) => datastore.findUserByEmail(email)
 export function incrementNumUsagesToday(apiKey: String, host: String) {
     return datastore.incrementNumUsagesToday(apiKey, host)
 }
@@ -51,12 +50,23 @@ function hasAccess(apiKey: String, host: String) {
 
 export function registerNewUser(email: String, host: String) {
 
+    // Check if the user already exists
+    if (datastore.findUserByEmail(email)) {
+        return { 
+            status: StatusCodes.EMAIL_ALREADY_EXISTS, 
+            user: null 
+        }
+    }
+
     // Remove the oldest users when user limit is reached
     if (datastore.isUserListFull())
         datastore.removeOldestUser()
     
     // Add new user to registered users
-    return datastore.addUser(getNewApiKey(), email, host)
+    return {
+        status: StatusCodes.SUCCESS,
+        user: datastore.addUser(getNewApiKey(), email, host)
+    }
 }
 
 export function validateKey(req, res, next) {

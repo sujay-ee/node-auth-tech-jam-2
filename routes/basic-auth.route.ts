@@ -1,18 +1,17 @@
 import * as express from 'express'
+import { getResponse } from '../shared/response-parser'
 import { 
     getAllUsers, 
     validateUser, 
     registerNewUser
 } from '../services/basic-auth.service'
-import { isValid, StatusCodes } from '../shared/statuscodes'
+import { StatusCodes } from '../shared/statuscodes'
 
 export const router = express.Router()
 
 router.get('/', (req, res) => {
-    res.json({
-        data: { msg: "Basic auth homepage" },
-        status: StatusCodes.SUCCESS
-    })
+    const ret = { msg: 'Basic auth homepage' }
+    res.json(getResponse(ret))
 })
 
 router.post('/register', async (req, res) => {
@@ -20,38 +19,29 @@ router.post('/register', async (req, res) => {
 
     // Ensure the input data is valid
     if (!email || !password) {
-        res.status(400).json({ 
-            status: StatusCodes.INVALID_DATA_FORMAT 
-        })
+        res.status(400).json(
+            getResponse(
+                null, 
+                StatusCodes.INVALID_DATA_FORMAT
+            )
+        )
         return
     }
 
     // Register a new user
-    const { status, data } = await registerNewUser(email, password)
-    if (!isValid(status)) {
-        res.status(400).json({ 
-            status: status
-        })
-        return
-    }
-
-    // Return the registered user
-    res.status(201).json({ 
-        data, 
-        status: StatusCodes.SUCCESS 
-    })
+    const { status, data, httpCode } = await registerNewUser(email, password)
+    res.status(httpCode).json(
+        getResponse(
+            data, 
+            status
+        )
+    )
 })
 
 router.get('/users', (req, res) => {
-    res.json({ 
-        data: { users: getAllUsers() }, 
-        status: StatusCodes.SUCCESS 
-    })
+    res.json(getResponse({ users: getAllUsers() }))
 })
 
 router.get('/protected', validateUser, (req, res) => {
-    res.json({
-        data: { msg: "This is protected data" },
-        status: StatusCodes.SUCCESS
-    })
+    res.json(getResponse({ msg: 'This is protected data' }))
 })

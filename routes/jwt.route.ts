@@ -1,19 +1,17 @@
 import * as express from 'express'
-import { isValid, StatusCodes } from '../shared/statuscodes'
+import { isStatusValid, StatusCodes } from '../shared/statuscodes'
 import { 
     getAllUsers, 
     registerNewUser, 
     signIn,
     validateJwt
 } from '../services/jwt.service'
+import { getResponse } from '../shared/response-parser'
 
 export const router = express.Router()
 
 router.get('/', (req, res) => {
-    res.json({
-        data: { msg: "JWT homepage" },
-        status: StatusCodes.SUCCESS
-    })
+    res.json(getResponse({ msg: 'JWT homepage' }))
 })
 
 router.post('/register', async (req, res) => {
@@ -21,27 +19,28 @@ router.post('/register', async (req, res) => {
 
     // Input data validation
     if (!email || !password || (!role && role != 0)) {
-        res.status(400).json({ 
-            status: StatusCodes.INVALID_DATA_FORMAT,
-            data: null
-        })
+        res.status(400).json(
+            getResponse(
+                null, 
+                StatusCodes.INVALID_DATA_FORMAT
+            )
+        )
         return
     }
 
     // Register the new user
-    const { status, data } = await registerNewUser(email, password, role)
-    if (!isValid(status)) {
-        res.status(400).json({
-            status: status,
-            data: null
-        })
+    const { status, data, httpCode } = await registerNewUser(email, password, role)
+    if (!isStatusValid(status)) {
+        res.status(httpCode).json(
+            getResponse(
+                null, 
+                status
+            )
+        )
         return
     }
 
-    res.status(201).json({ 
-        data: { user: data },
-        status: StatusCodes.SUCCESS
-    })
+    res.status(201).json(getResponse({ user: data }))
 })
 
 router.post('/sign_in', async (req, res) => {
@@ -49,37 +48,33 @@ router.post('/sign_in', async (req, res) => {
 
     // Input data validation
     if (!email || !password) {
-        res.status(400).json({ 
-            status: StatusCodes.INVALID_DATA_FORMAT 
-        })
+        res.status(400).json(
+            getResponse(
+                null, 
+                StatusCodes.INVALID_DATA_FORMAT
+            )
+        )
         return
     }
 
-    const { status, token } = await signIn(email, password)
-    if (!isValid(status)) {
-        res.status(400).json({
-            status: status,
-            data: null
-        })
+    const { status, token, httpCode } = await signIn(email, password)
+    if (!isStatusValid(status)) {
+        res.status(httpCode).json(
+            getResponse(
+                null,
+                status
+            )
+        )
         return
     }
 
-    res.json({
-        status: StatusCodes.SUCCESS,
-        data: { token }
-    })
+    res.json(getResponse({ token }))
 })
 
 router.get('/users', (req, res) => {
-    res.json({ 
-        status: StatusCodes.SUCCESS,
-        data: { users: getAllUsers() }
-     })
+    res.json(getResponse({ users: getAllUsers() }))
 })
 
 router.get('/protected', validateJwt, (req, res, next) => {
-    res.json({
-        status: StatusCodes.SUCCESS,
-        data: { msg: "This is a protected data" }
-    })
+    res.json(getResponse({ msg: 'This is a protected data' }))
 })

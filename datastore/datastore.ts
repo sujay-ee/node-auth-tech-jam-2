@@ -1,28 +1,30 @@
-import { apiKeyUsers, basicAuthUsers, jwtUsers } from '../shared/data'
+import {
+    apiKeyUsers,
+    basicAuthUsers,
+    jwtUsers,
+} from "../shared/data"
 
 const MAX_NUM_REGISTERED_USERS = 10
 
 export enum UserType {
-    API_KEY, 
-    BASIC_AUTH, 
-    JWT
+    API_KEY,
+    BASIC_AUTH,
+    JWT,
 }
 
 export class DataStore {
     users: Array<any>
 
     constructor(userType: UserType) {
-        this.users = []
-
-        switch(+userType) {
+        switch (+userType) {
             case UserType.API_KEY:
-                this.users = [...apiKeyUsers]
+                this.users = apiKeyUsers
                 break
             case UserType.BASIC_AUTH:
-                this.users = [...basicAuthUsers]
+                this.users = basicAuthUsers
                 break
             case UserType.JWT:
-                this.users = [...jwtUsers]
+                this.users = jwtUsers
                 break
         }
     }
@@ -54,6 +56,8 @@ export class DataStore {
     }
 
     isUserListFull() {
-        return this.getNumUsers() >= MAX_NUM_REGISTERED_USERS
+        return (
+            this.getNumUsers() >= MAX_NUM_REGISTERED_USERS
+        )
     }
 }

@@ -1,5 +1,6 @@
 import { StatusCodes } from '../shared/statuscodes'
 import { UserType, DataStore } from './datastore'
+import * as DateUtils from '../shared/date-utils'
 
 export class ApiKeyStore extends DataStore {
 
@@ -8,7 +9,7 @@ export class ApiKeyStore extends DataStore {
     }
 
     getDateToday() {
-        return new Date().toISOString().split('T')[0]
+        return DateUtils.getDateToday()
     }
 
     createNewUser(apiKey: String, email: String, host: String) {

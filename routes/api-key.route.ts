@@ -1,87 +1,64 @@
-import * as express from 'express'
-import { 
-    getAllUsers, 
-    registerNewUser, 
-    validateKey, 
-    incrementNumUsagesToday 
-} from '../services/api-key-auth.service'
-import { isValid, StatusCodes } from '../shared/statuscodes'
+import * as express from "express"
+import {
+    getAllUsers,
+    registerNewUser,
+    validateKey,
+    incrementNumUsagesToday,
+} from "../services/api-key-auth.service"
+import {
+    isStatusValid,
+    StatusCodes,
+} from "../shared/statuscodes"
+import { getResponse } from "../shared/response-parser"
 
 export const router = express.Router()
 
-router.get('/', (req, res) => {
-    res.json({
-        data: { msg: "Api key homepage" },
-        status: StatusCodes.SUCCESS
-    })
+router.get("/", (req, res) => {
+    const ret = { msg: "Api key homepage" }
+    res.json(getResponse(ret, StatusCodes.SUCCESS))
 })
 
-router.post('/register', (req, res) => {
+router.post("/register", (req, res) => {
     const host = req.headers.host
     const email = req.body.email
 
     // Check if input data is valid
     if (!email || !host) {
-        res.status(400).json({ 
-            status: StatusCodes.INVALID_DATA_FORMAT,
-            data: null
-        })
+        res.status(400).json(
+            getResponse(
+                null,
+                StatusCodes.INVALID_DATA_FORMAT
+            )
+        )
         return
     }
 
     // Register the new user
-    const { status, user } = registerNewUser(email, host)
-    if (!isValid(status)) {
-        // TODO All invalidations assumed to be bad-request 
-        res.status(400).json({ 
-            status: StatusCodes.EMAIL_ALREADY_EXISTS,
-            data: null
-        })
-        return
-    }
-
-    // New user created
-    res.status(201).json({ 
-        status: StatusCodes.SUCCESS,
-        data: user
-    })
+    const { status, user, httpCode } = registerNewUser(
+        email,
+        host
+    )
+    res.status(httpCode).json(getResponse(user, status))
 })
 
-router.get('/users', (req, res) => {
-    res.json({ 
-        status: StatusCodes.SUCCESS,
-        data: { users: getAllUsers() }
-    })
+router.get("/users", (req, res) => {
+    const ret = { users: getAllUsers() }
+    res.json(getResponse(ret))
 })
 
-router.get('/protected', validateKey, (req, res) => {
+router.get("/protected", validateKey, (req, res) => {
     const host = req.headers.host
-    const apiKey = req.header('x-api-key')
+    const apiKey = req.header("x-api-key")
 
-    // Check if input data is valid
-    // Control shouldn't reach here when apikey is empty
-    if (!host || !apiKey) {
-        res.status(400).json({ 
-            status: StatusCodes.API_KEY_EMPTY,
-            data: null
-        })
-        return
-    }
-
-    const ret = incrementNumUsagesToday(apiKey, host)
-    if (!isValid(ret)) {
+    const status = incrementNumUsagesToday(apiKey, host)
+    if (!isStatusValid(status)) {
         // Control shouldn't reach here,
-        // This means that a request was able to get past 
+        // This means that a request was able to get past
         // the api-key validation using a bad api-key
-        res.status(404).json({
-            status: ret,
-            data: null
-        })
+        res.status(401).json(getResponse(null, status))
         return
     }
 
-    res.json({
-        status: StatusCodes.SUCCESS,
-        data: { msg: "This is protected data" }
-    })
+    const ret = { msg: "This is protected data" }
+    res.json(getResponse(ret))
 })

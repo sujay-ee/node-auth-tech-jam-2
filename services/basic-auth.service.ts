@@ -1,6 +1,7 @@
 import { BasicAuthStore } from '../datastore/basic-auth.store'
 import { StatusCodes } from '../shared/statuscodes'
 import * as bcrypt from 'bcrypt'
+import { getResponse } from '../shared/response-parser'
 
 // Init the basic auth datastore
 const datastore = new BasicAuthStore()
@@ -14,25 +15,40 @@ async function isPasswordValid(passString: String, passEncrypted: String) {
 
 export async function validateUser(req, res, next) {
     const email = req.body.email
+    const password = req.body.password
     const user = datastore.findUserByEmail(email)
 
+    // Empty email or password
+    if (!email || !password) {
+        res.status(400).json(
+            getResponse(
+                null, 
+                StatusCodes.INVALID_DATA_FORMAT
+            )
+        )
+        return
+    }
+
     // User doesn't exist
-    if (!user) {
-        res.status(404).json({
-            status: StatusCodes.USER_NOT_REGISTERED,
-            data: null
-        })
+    if (email && !user) {
+        res.status(404).json(
+            getResponse(
+                null, 
+                StatusCodes.USER_NOT_REGISTERED
+            )
+        )
         return
     }
 
     // Make sure the password is correct
-    const password = req.body.password
-    const isValid = await isPasswordValid(password, user.password)
-    if (!isValid) {
-        res.status(401).json({
-            status: StatusCodes.RESOURCE_ACCESS_DENIED,
-            data: null
-        })
+    const isStatusValid = await isPasswordValid(password, user.password)
+    if (!isStatusValid) {
+        res.status(401).json(
+            getResponse(
+                null, 
+                StatusCodes.RESOURCE_ACCESS_DENIED
+            )
+        )
         return
     }
 
@@ -45,7 +61,8 @@ export async function registerNewUser(email: String, password: String) {
     if (datastore.findUserByEmail(email)) {
         return {
             status: StatusCodes.EMAIL_ALREADY_EXISTS,
-            data: null
+            data: null,
+            httpCode: 409
         }
     }
 
@@ -58,6 +75,7 @@ export async function registerNewUser(email: String, password: String) {
     const hashedPassword = await bcrypt.hash(password, hashSalt)
     return {
         status: StatusCodes.SUCCESS,
-        data: datastore.addUser(email, hashedPassword)
+        data: datastore.addUser(email, hashedPassword),
+        httpCode: 201
     }
 }

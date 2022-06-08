@@ -2,9 +2,10 @@ import { StatusCodes } from '../shared/statuscodes'
 import { JwtStore } from '../datastore/jwt.store'
 import * as bcrypt from 'bcrypt'
 import * as jwt from 'jsonwebtoken'
+import { getResponse } from '../shared/response-parser'
 
 // Global constants
-const JWT_SECRET_KEY = "my_secret_key"
+const JWT_SECRET_KEY = 'iidjU#U882hUSDFBbbsj18*DF'
 const JWT_TTL = 300 // Jwt time-to-live
 
 // Init the jwt auth datastore
@@ -23,7 +24,8 @@ export async function registerNewUser(email: String, password: String, role: num
     if (datastore.findUserByEmail(email)) {
         return {
             status: StatusCodes.EMAIL_ALREADY_EXISTS,
-            data: null
+            data: null,
+            httpCode: 409
         }
     }
 
@@ -36,7 +38,8 @@ export async function registerNewUser(email: String, password: String, role: num
     const hashedPassword = await bcrypt.hash(password, hashSalt)
     return {
         status: StatusCodes.SUCCESS,
-        data: datastore.addUser(email, hashedPassword, role)
+        data: datastore.addUser(email, hashedPassword, role),
+        httpCode: 201
     }
 }
 
@@ -47,17 +50,18 @@ export async function signIn(email: String, password: String) {
     if (!user) {
         return { 
             status: StatusCodes.USER_NOT_REGISTERED,  
-            token: null
+            token: null,
+            httpCode: 400
         }
     }
 
     // Password check
-    const isValid = await isPasswordValid(password, user.password)
-    if (!isValid) {
-        // TODO this is a 401
+    const isStatusValid = await isPasswordValid(password, user.password)
+    if (!isStatusValid) {
         return {
             status: StatusCodes.RESOURCE_ACCESS_DENIED,
-            token: null
+            token: null,
+            httpCode: 401
         }
     }
 
@@ -66,39 +70,48 @@ export async function signIn(email: String, password: String) {
     const token = jwt.sign({ email, role: user.role }, JWT_SECRET_KEY, jwtHeader)
     return { 
         status: StatusCodes.SUCCESS,  
-        token
+        token,
+        httpCode: 200
     }
 
 }
 
 export function validateJwt(req, res, next) {
-    // TODO paste the jwt token format here
-    const jwtToken = req.headers.authorization.split(' ')[1]
+    var jwtToken = req.headers.authorization
 
     // Token doesn't exist
     if (!jwtToken) {
-        res.status(400).json({
-            status: StatusCodes.TOKEN_EMPTY
-        })
+        res.status(400).json(
+            getResponse(
+                null, 
+                StatusCodes.TOKEN_EMPTY
+            )
+        )
         return
     }
+    jwtToken = jwtToken.split(' ')[1]
 
     // Validate the jwt token
     // TODO clean this up
     try {
         const jwtData = jwt.verify(jwtToken, JWT_SECRET_KEY)
-        console.log(`this is debug: ${JSON.stringify(jwtData)}`)
         if (!jwtData) {
-            res.status(401).json({
-                status: StatusCodes.TOKEN_BAD
-            })
+            res.status(401).json(
+                getResponse(
+                    null, 
+                    StatusCodes.TOKEN_BAD
+                )
+            )
             return
         }
     } catch (e) {
         console.log(`err: ${e}`)
-        res.status(401).json({
-            status: StatusCodes.TOKEN_BAD
-        })
+        res.status(401).json(
+            getResponse(
+                null, 
+                StatusCodes.TOKEN_BAD
+            )
+        )
         return
     }
 

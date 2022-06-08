@@ -3,7 +3,7 @@ import { createServer } from "../app"
 import { apiKeyUsers as users } from "../shared/data"
 import { mockApiKeyUsers } from "./mock-data"
 
-describe("GET /register", () => {
+describe("POST /register", () => {
     var app: Express.Application
     var numUsers = 0
 
@@ -17,18 +17,17 @@ describe("GET /register", () => {
     })
 
     test("homepage", async () => {
-        await supertest(app).get("/").expect(200)
+        await supertest(app).get("/apikey").expect(200)
     })
 
-    it("fails when email field is missing", async () => {
+    it("fails when email field is missing or empty", async () => {
+        // Email missing
         await supertest(app)
             .post(url)
             .send({})
             .expect("Content-Type", /json/)
             .expect(400)
-    })
-
-    it("fails when email is empty", async () => {
+        // Email empty
         await supertest(app)
             .post(url)
             .send({ email: "" })
@@ -45,7 +44,7 @@ describe("GET /register", () => {
         expect(users.length).toEqual(numUsers)
     })
 
-    it("creates a new user when no validations fail", async () => {
+    it("creates a new user when data is valid", async () => {
         await supertest(app)
             .post(url)
             .send({
@@ -72,12 +71,9 @@ describe("GET /protected", () => {
         numUsers = users.length
     })
 
-    it("fails when api-key is unavailable", async () => {
-        await supertest(app).get(url).expect(400)
-    })
-
-    it("fails when api-key is empty", async () => {
+    it("fails when api-key is missing or empty", async () => {
         // Key not found
+        await supertest(app).get(url).expect(400)
         await supertest(app).get(url).set({}).expect(400)
         // Value empty
         await supertest(app)

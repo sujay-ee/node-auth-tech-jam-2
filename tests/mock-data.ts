@@ -24,5 +24,18 @@ export const mockApiKeyUsers = [
         ],
     },
 ]
-export const basicAuthUsers = []
+export const mockBasicAuthUsers = [
+    {
+        id: "l3g7tq51",
+        email: "user1@email.com",
+        password:
+            "$2b$10$ZZKXH3s1j305Df1kuJgZC.tCpwCVDRTGH0pRmQMb2Vs0NdHWsyFZG",
+    },
+    {
+        id: "l3l7tq54",
+        email: "user2@email.com",
+        password:
+            "$2b$10$ZZKXH3s1j305Df1kuJgZC.tCpwCVDRTGH0pRmQMb2Vs0NdHWsyFZG",
+    },
+]
 export const jwtUsers = []

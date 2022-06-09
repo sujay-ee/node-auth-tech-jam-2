@@ -92,35 +92,6 @@ E.g. the token could simply be the ID of the row of a DB where the **AS** origin
 
 ---
 
-# Who is the 'access-token' meant for then ?
-
-A client is meant to do two things with an access token - 
-
-* request it
-  <br />
-* use it to call the resource it is meant for
-  <br />
-* renew it when expired
-  <br />
-
-Ok, that's 3 things 😁
----
-
-# Summary of points about the 'access-token'
-
-* Access tokens do not represent a user
-<br />
-* Access tokens do not represent authentication
-<br />
-* Access tokens can be anything and contain anything
-<br />
-* Access tokens cannot be safely verified by the client application
-<br />
-* Access tokens cannot be safely verified by the client application
-<br />
-
----
-
 # Scope vs Claim
 
 * **Claims** - assertions that one subject (e.g. a user or an Authorization Server) makes about itself or another subject.
@@ -133,23 +104,6 @@ Ok, that's 3 things 😁
 Consenting to the use of this scope will result in getting an ID Token which will include the 
 following claims: `name`, `family_name`, `given_name`, `birthdate`, `profile_picture` etc.
   <br />
-
----
-
-# What if I want to do authentication with OAuth ? 
-
-* Use **OpenID Connect (OIDC)** - OAuth + Identity
-<br />
-* OpenID Connect (OIDC) extends OAuth 2.0 with a new signed id_token for the client and a UserInfo endpoint to fetch user attributes
-<br />
-* Enter **identity-token** -
-<br />
-An identity token describes the authentication event that took place at the identity provider. 
-<br />
-It contains information such as when the user last authenticated and how they authenticated. 
-<br />
-An identity token is **always** a signed JSON Web Token (JWT).
-<br />
 
 ---
 

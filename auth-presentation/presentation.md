@@ -17,30 +17,6 @@
 
 ---
 
-# Authentication vs Single-Sign-On(SSO) vs Federation
-
-* **Authentication**:
-<br />
-Process of an entity (the Principal) proving its identity to another entity (the System).
-<br />
-  <br />
-* **Single Sign On (SSO)**: 
-  <br />
-  Characteristic of an authentication mechanism that relates to the user’s identity being used to provide access across multiple Service Providers.
-  <br />
-**Examples**: LDAP Server or Active Directory - containing all the employee's details, Identity Provider (IdP) - e.g. Auth0, Ping Identity, Okta.
-  <br />
-<br />
-* **Federation**:
-  <br />
-  Common standards and protocols to manage and map user identities between Identity Providers across organizations (and security domains) via trust relationships (usually established via digital signatures, encryption, and PKI).
-  <br />
-**Examples**: multiple organizations trusting a single third-party IdP or the other way around. Okta login is an everyday example.
-<br />
-  <br />
-
----
-
 # What does the OAuth specification represent ?
 
 * Is it an **authentication** standard ?
@@ -55,15 +31,13 @@ Process of an entity (the Principal) proving its identity to another entity (the
 
 ---
 
-# World of "Authentication" - specifications/standards/protocols/methods - in increasing order of implementation complexity 
+# World of API "Authentication"/Authorization  
 
 * **BASIC AUTH** - Username and password were contained in a single header field, in plain text, base64 encoding.
 <br />
-* **LDAP** - Lightweight Directory Access Protocol (LDAP) is a software protocol for enabling anyone to locate organizations, individuals, and other resources such as files and devices in a network, whether on the public Internet or on a corporate intranet.
+* **API KEY** - API key issued using some sort of algorithm that the server can verify the validity of and manage the lifetime of the key.
 <br />
-* **SAML** - Security Assertion Markup Language (SAML) is an XML-based, open-standard data format for exchanging authentication and authorization data between parties, in particular, between an identity provider and a service provider.
-<br />
-* **Kerberos** - a network authentication protocol. It is designed to provide strong authentication for client/server applications by using secret-key cryptography.
+* **ROLL YOUR OWN JWT** - Server manages access tokens as JWT tokens in a custom format - similar to the API key solution but using JWT tokens.
 <br />
 * **OAuth** - ??? 
 

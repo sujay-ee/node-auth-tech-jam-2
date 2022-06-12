@@ -24,6 +24,21 @@ router.post("/register", async (req, res) => {
      * - Registered users "email" must be unique
      * - Return the details of the registered user
      */
+    const { email, password } = req.body
+
+    // Register the new user
+    const { status, data, httpCode } =
+        await registerNewUser(email, password)
+    if (!isStatusValid(status)) {
+        res.status(httpCode).json(getResponse(null, status))
+        return
+    }
+
+    const ret = {
+        id: data["id"],
+        email: data["email"],
+    }
+    res.status(201).json(getResponse({ user: ret }))
 })
 
 router.post("/signin", async (req, res) => {
@@ -42,6 +57,18 @@ router.post("/signin", async (req, res) => {
      * - To generate a jwt token either use "generateJwtToken(email)" from "jwt.service.ts"
      *   Or use "jsonwebtoken" module and use "jwt.sign({email})"
      */
+    const { email, password } = req.body
+
+    const { status, token, httpCode } = await signIn(
+        email,
+        password
+    )
+    if (!isStatusValid(status)) {
+        res.status(httpCode).json(getResponse(null, status))
+        return
+    }
+
+    res.json(getResponse({ token }))
 })
 
 router.get("/users", (req, res) => {
@@ -61,4 +88,7 @@ router.get("/protected", validateJwt, (req, res) => {
      * - Get the authorization token from the headers using "req.headers.authorization"
      * - Authorization is sent in the header with format "Bearer <token>"
      */
+    res.json(
+        getResponse({ msg: "This is a protected data" })
+    )
 })

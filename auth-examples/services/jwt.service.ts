@@ -18,6 +18,15 @@ async function isPasswordValid(
     return await bcrypt.compare(passString, passEncrypted)
 }
 
+function getJwtToken(email: String) {
+    // Generate the jwt token
+    const jwtHeader = {
+        algorithm: "HS256",
+        expiresIn: JWT_TTL,
+    }
+    return jwt.sign({ email }, JWT_SECRET_KEY, jwtHeader)
+}
+
 export async function registerNewUser(
     email: String,
     password: String
@@ -93,19 +102,9 @@ export async function signIn(
         }
     }
 
-    // Generate the jwt token
-    const jwtHeader = {
-        algorithm: "HS256",
-        expiresIn: JWT_TTL,
-    }
-    const token = jwt.sign(
-        { email },
-        JWT_SECRET_KEY,
-        jwtHeader
-    )
     return {
         status: StatusCodes.SUCCESS,
-        token,
+        token: getJwtToken(email),
         httpCode: 200,
     }
 }
@@ -123,7 +122,6 @@ export function validateJwt(req, res, next) {
     jwtToken = jwtToken.split(" ")[1]
 
     // Validate the jwt token
-    // TODO clean this up
     try {
         const jwtData = jwt.verify(jwtToken, JWT_SECRET_KEY)
         if (!jwtData) {

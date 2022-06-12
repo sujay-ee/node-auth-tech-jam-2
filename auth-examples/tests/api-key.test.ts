@@ -16,10 +16,6 @@ describe("POST /register", () => {
         numUsers = users.length
     })
 
-    test("homepage", async () => {
-        await supertest(app).get("/apikey").expect(200)
-    })
-
     it("fails when email field is missing or empty", async () => {
         // Email missing
         await supertest(app)
@@ -103,7 +99,7 @@ describe("GET /protected", () => {
             .expect(401)
     })
 
-    it("fails due to max requests exceeded", async () => {
+    it("(Optional) fails due to max requests exceeded", async () => {
         await supertest(app)
             .get(url)
             .set({

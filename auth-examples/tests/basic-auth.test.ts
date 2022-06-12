@@ -80,43 +80,41 @@ describe("GET /protected", () => {
     it("fails when input data is missing or empty", async () => {
         // Body empty
         await supertest(app).get(url).expect(400)
-        await supertest(app).get(url).send({}).expect(400)
+        await supertest(app).get(url).set({}).expect(400)
         await supertest(app)
             .get(url)
-            .send({ email: "" })
-            .expect(400)
-        await supertest(app)
-            .get(url)
-            .send({ password: "" })
+            .set({ Authorization: "" })
             .expect(400)
     })
 
     it("fails if the user isn't registered", async () => {
+        // Using email: aa@b.com, password: abcd
         await supertest(app)
             .get(url)
-            .send({
-                email: "asdf@test.com",
-                password: "abcd",
+            .set({
+                Authorization: "Basic YWFAYi5jb206YWJjZA==",
             })
             .expect(400)
     })
 
     it("fails if the there's a email-password mismatch", async () => {
+        // Using email: user1@email.com, password: abcde
         await supertest(app)
             .get(url)
-            .send({
-                email: mockBasicAuthUsers[0].email,
-                password: "not-password",
+            .set({
+                Authorization:
+                    "Basic dXNlcjFAZW1haWwuY29tOmFiY2Rl",
             })
             .expect(401)
     })
 
     it("succeeds when email-password are valid", async () => {
+        // Using email: user1@email.com, password: abcd
         await supertest(app)
             .get(url)
-            .send({
-                email: mockBasicAuthUsers[0].email,
-                password: "abcd",
+            .set({
+                Authorization:
+                    "Basic dXNlcjFAZW1haWwuY29tOmFiY2Q=",
             })
             .expect(200)
     })

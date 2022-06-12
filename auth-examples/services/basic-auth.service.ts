@@ -17,10 +17,25 @@ async function isPasswordValid(
 }
 
 export async function validateUser(req, res, next) {
-    const email = req.body.email
-    const password = req.body.password
-    const user = datastore.findUserByEmail(email)
+    const authorization = req.headers.authorization
+    if (!authorization) {
+        res.status(400).json(
+            getResponse(
+                null,
+                StatusCodes.INVALID_DATA_FORMAT
+            )
+        )
+        return
+    }
 
+    // Split the authorization
+    // Format: Basic <base64 encoded email:password>
+    const base64creds = authorization.split(" ")[1]
+    const creds = Buffer.from(
+        base64creds,
+        "base64"
+    ).toString("ascii")
+    const [email, password] = creds.split(":")
     // Empty email or password
     if (!email || !password) {
         res.status(400).json(
@@ -32,6 +47,7 @@ export async function validateUser(req, res, next) {
         return
     }
 
+    const user = datastore.findUserByEmail(email)
     // User doesn't exist
     if (email && !user) {
         res.status(400).json(

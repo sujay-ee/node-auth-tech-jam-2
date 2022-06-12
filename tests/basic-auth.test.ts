@@ -16,10 +16,6 @@ describe("POST /register", () => {
         numUsers = users.length
     })
 
-    test("homepage", async () => {
-        await supertest(app).get("/basicauth").expect(200)
-    })
-
     it("fails when email or password are missing or empty", async () => {
         // Data missing
         await supertest(app)
@@ -32,12 +28,14 @@ describe("POST /register", () => {
             .post(url)
             .send({
                 email: "",
+                password: "abcd",
             })
             .expect("Content-Type", /json/)
             .expect(400)
         await supertest(app)
             .post(url)
             .send({
+                email: "test@mail.com",
                 password: "",
             })
             .expect("Content-Type", /json/)

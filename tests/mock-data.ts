@@ -38,4 +38,17 @@ export const mockBasicAuthUsers = [
             "$2b$10$ZZKXH3s1j305Df1kuJgZC.tCpwCVDRTGH0pRmQMb2Vs0NdHWsyFZG",
     },
 ]
-export const jwtUsers = []
+export const mockJwtUsers = [
+    {
+        id: "l3g7tq51",
+        email: "user1@email.com",
+        password:
+            "$2b$10$ZZKXH3s1j305Df1kuJgZC.tCpwCVDRTGH0pRmQMb2Vs0NdHWsyFZG",
+    },
+    {
+        id: "l3g7kql2",
+        email: "user2@email.com",
+        password:
+            "$2b$10$ZZKXH3s1j305Df1kuJgZC.tCpwCVDRTGH0pRmQMb2Vs0NdHWsyFZG",
+    },
+]

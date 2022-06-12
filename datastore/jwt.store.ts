@@ -1,28 +1,20 @@
-import { UserType, DataStore } from './datastore'
-
-enum UserRole {
-    ADMIN,
-    STANDARD,
-    MAINTENANCE
-}
+import { UserType, DataStore } from "./datastore"
 
 export class JwtStore extends DataStore {
-
     constructor() {
         super(UserType.JWT)
     }
 
-    createNewUser(email: String, password: String, role: UserRole) {
+    createNewUser(email: String, password: String) {
         return {
             id: this.getRandomUserId(),
             email: email,
             password: password,
-            role: UserRole[role]
         }
     }
 
-    addUser(email: String, password: String, role: UserRole) {
-        const user = this.createNewUser(email, password, role)
+    addUser(email: String, password: String) {
+        const user = this.createNewUser(email, password)
         return super.addUserToDb(user)
     }
 }

@@ -19,7 +19,7 @@ export const mockApiKeyUsers = [
         usages: [
             {
                 date: DateUtils.getDateToday(),
-                count: Configs.MAX_REQUESTS_PER_DAY,
+                count: Configs.MAX_API_REQUESTS_PER_DAY,
             },
         ],
     },

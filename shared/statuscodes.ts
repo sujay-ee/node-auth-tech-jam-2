@@ -1,5 +1,4 @@
 export enum StatusCodes {
-
     SUCCESS = 0,
 
     // Input errors
@@ -13,16 +12,12 @@ export enum StatusCodes {
     API_LIMIT_EXCEEDED = -2001,
     API_KEY_EMPTY = -2002,
 
-    // Basic Auth errors
-
     // Jwt error codes
     TOKEN_BAD = -4001,
-    TOKEN_EMPTY = -4002
-
+    TOKEN_EMPTY = -4002,
 }
 
 export enum StatusMessage {
-
     SUCCESS = "Successful",
 
     INVALID_DATA_FORMAT = "Invalid data format",

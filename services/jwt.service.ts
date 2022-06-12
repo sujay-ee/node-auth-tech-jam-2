@@ -3,10 +3,7 @@ import { JwtStore } from "../datastore/jwt.store"
 import * as bcrypt from "bcrypt"
 import * as jwt from "jsonwebtoken"
 import { getResponse } from "../shared/response-parser"
-
-// Global constants
-const JWT_SECRET_KEY = "iidjU#U882hUSDFBbbsj18*DF"
-const JWT_TTL = 300 // Jwt time-to-live
+import { JWT_SECRET_KEY, JWT_TTL } from "../shared/configs"
 
 // Init the jwt auth datastore
 const datastore = new JwtStore()

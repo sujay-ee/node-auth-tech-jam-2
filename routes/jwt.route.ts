@@ -1,8 +1,5 @@
 import * as express from "express"
-import {
-    isStatusValid,
-    StatusCodes,
-} from "../shared/statuscodes"
+import { isStatusValid } from "../shared/statuscodes"
 import {
     getAllUsers,
     registerNewUser,
@@ -28,7 +25,11 @@ router.post("/register", async (req, res) => {
         return
     }
 
-    res.status(201).json(getResponse({ user: data }))
+    const ret = {
+        id: data["id"],
+        email: data["email"],
+    }
+    res.status(201).json(getResponse({ user: ret }))
 })
 
 router.post("/signin", async (req, res) => {
@@ -50,7 +51,7 @@ router.get("/users", (req, res) => {
     res.json(getResponse({ users: getAllUsers() }))
 })
 
-router.get("/protected", validateJwt, (req, res, next) => {
+router.get("/protected", validateJwt, (req, res) => {
     res.json(
         getResponse({ msg: "This is a protected data" })
     )

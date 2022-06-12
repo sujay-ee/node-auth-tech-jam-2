@@ -2,7 +2,7 @@ import { v4 as uuidv4, validate } from "uuid"
 import { ApiKeyStore } from "../datastore/api-key.store"
 import { StatusCodes } from "../shared/statuscodes"
 import { getResponse } from "../shared/response-parser"
-import { MAX_REQUESTS_PER_DAY } from "../shared/configs"
+import { MAX_API_REQUESTS_PER_DAY } from "../shared/configs"
 
 // Init api key datastore
 const datastore = new ApiKeyStore()
@@ -42,7 +42,7 @@ function hasAccess(apiKey: String, host: String) {
     if (!numUsages) return true
 
     // Ensure that the user hasn't already made too many requests
-    if (numUsages >= MAX_REQUESTS_PER_DAY) return false
+    if (numUsages >= MAX_API_REQUESTS_PER_DAY) return false
 
     return true
 }

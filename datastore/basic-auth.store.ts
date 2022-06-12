@@ -1,7 +1,6 @@
-import { UserType, DataStore } from './datastore'
+import { UserType, DataStore } from "./datastore"
 
 export class BasicAuthStore extends DataStore {
-
     constructor() {
         super(UserType.BASIC_AUTH)
     }
@@ -14,7 +13,7 @@ export class BasicAuthStore extends DataStore {
         return {
             id: this.getRandomUserId(),
             email: email,
-            password: password
+            password: password,
         }
     }
 

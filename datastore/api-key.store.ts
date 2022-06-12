@@ -1,9 +1,8 @@
-import { StatusCodes } from '../shared/statuscodes'
-import { UserType, DataStore } from './datastore'
-import * as DateUtils from '../shared/date-utils'
+import { StatusCodes } from "../shared/statuscodes"
+import { UserType, DataStore } from "./datastore"
+import * as DateUtils from "../shared/date-utils"
 
 export class ApiKeyStore extends DataStore {
-
     constructor() {
         super(UserType.API_KEY)
     }
@@ -12,19 +11,29 @@ export class ApiKeyStore extends DataStore {
         return DateUtils.getDateToday()
     }
 
-    createNewUser(apiKey: String, email: String, host: String) {
+    createNewUser(
+        apiKey: String,
+        email: String,
+        host: String
+    ) {
         return {
             id: super.getRandomUserId(),
             api_key: apiKey,
             email: email,
             host: host,
-            usages: [{ date: this.getDateToday(), count: 0 }]
+            usages: [
+                { date: this.getDateToday(), count: 0 },
+            ],
         }
     }
 
     findUser(apiKey: String, host: String) {
-        return super.getAllUsers()
-            .find((u) => u.api_key === apiKey && u.host === host)
+        return super
+            .getAllUsers()
+            .find(
+                (u) =>
+                    u.api_key === apiKey && u.host === host
+            )
     }
 
     addUser(apiKey: String, email: String, host: String) {
@@ -34,7 +43,9 @@ export class ApiKeyStore extends DataStore {
 
     getNumUsagesToday(apiKey: String, host: String) {
         const usages = this.findUser(apiKey, host).usages
-        return usages.find((u) => u.date === this.getDateToday()).count
+        return usages.find(
+            (u) => u.date === this.getDateToday()
+        ).count
     }
 
     incrementNumUsagesToday(apiKey: String, host: String) {
@@ -42,20 +53,19 @@ export class ApiKeyStore extends DataStore {
         const user = this.findUser(apiKey, host)
 
         // User not found
-        if (!user)
-            return StatusCodes.USER_NOT_REGISTERED
+        if (!user) return StatusCodes.USER_NOT_REGISTERED
 
         // First entry of the day
-        const usageIndex = user.usages.findIndex((u) => u.date === dateToday)
+        const usageIndex = user.usages.findIndex(
+            (u) => u.date === dateToday
+        )
         if (usageIndex == -1) {
             user.usages.push({ date: dateToday, count: 1 })
             return StatusCodes.SUCCESS
         }
 
         // Update the existing usage entry, then return it
-        user.usages[usageIndex].count ++
+        user.usages[usageIndex].count++
         return StatusCodes.SUCCESS
     }
-
 }
-

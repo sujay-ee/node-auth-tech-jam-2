@@ -17,6 +17,68 @@
 
 ---
 
+# World of API "Authentication"/Authorization  
+
+* **BASIC AUTH** - Username and password were contained in a single header field, in plain text, base64 encoding.
+<br />
+* **API KEY** - API key issued using some sort of algorithm that the server can verify the validity of and manage the lifetime of the key.
+<br />
+* **ROLL YOUR OWN JWT** - Server manages access tokens as JWT tokens in a custom format - similar to the API key solution but using JWT tokens.
+<br />
+* **OAuth** - ??? 
+
+---
+
+# Basic Auth
+
+## Probable use case
+* server-to-server
+
+## Pros
+
+* standardized way to send credentials
+* easy to implement
+
+## Cons
+
+* it’s not possible to know what the app does with the password
+* passwords are long-lived
+
+---
+
+# API Keys
+
+## Probable use case
+* server-to-server
+
+## Pros
+
+* easy to implement
+
+## Cons
+
+* only identifies the application, not the user of the application
+* not standardized
+
+---
+
+# Roll-your-own-JWT token
+
+## Probable use case
+* server-to-server
+* client-to-server - only when your implementation is mature enough to handle public clients, or you trust them (private clients)
+
+## Pros
+
+* Simpler to implement than integration with an Auth provider
+
+## Cons
+
+* complex to implement all JWT features like expiry, rotation(refresh), 
+* not clear to the client if token implements a standard or not - can be confusing 
+
+---
+
 # What does the OAuth specification represent ?
 
 * Is it an **authentication** standard ?
@@ -28,18 +90,6 @@
 * **Authentication** is the process of verifying an identity (who they say they are)
   <br />
 * **Authorization** is the process of verifying what someone is allowed to do (permissions)
-
----
-
-# World of API "Authentication"/Authorization  
-
-* **BASIC AUTH** - Username and password were contained in a single header field, in plain text, base64 encoding.
-<br />
-* **API KEY** - API key issued using some sort of algorithm that the server can verify the validity of and manage the lifetime of the key.
-<br />
-* **ROLL YOUR OWN JWT** - Server manages access tokens as JWT tokens in a custom format - similar to the API key solution but using JWT tokens.
-<br />
-* **OAuth** - ??? 
 
 ---
 
@@ -125,6 +175,5 @@ following claims: `name`, `family_name`, `given_name`, `birthdate`, `profile_pic
 <br />
 * Is the access time limited ? (e.g. token expiry, session expiry)
 <br />
-* How are the **scopes** and **claims** organized ? (e.g. a particular `role` might have access to certain `scopes` or `claims`, or an API might need certain `scopes` or `claims`.)
 
 ---

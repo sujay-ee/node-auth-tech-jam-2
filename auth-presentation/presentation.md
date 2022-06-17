@@ -103,7 +103,7 @@
 ---
 
 # OAuth != Authentication
-**OAuth is an "authorization" protocol**
+**OAuth is an "authorization" protocol or more specifically "access delegation" protocol**
 
 https://oauth.net/articles/authentication/
 

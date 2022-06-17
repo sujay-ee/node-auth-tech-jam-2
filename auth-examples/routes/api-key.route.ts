@@ -20,8 +20,6 @@ router.get("/", (req, res) => {
 
 router.post("/register", (req, res) => {
     /**
-     * TODO
-     *
      * - To register a user we need 2 fields "email" and "host"
      * - "email" to be obtained from the body and "host" is available in the headers
      * - Fields should not be missing or empty
@@ -33,6 +31,26 @@ router.post("/register", (req, res) => {
      * - To generate an api key use function "getNewApiKey()" availale at "api-key-auth.service.ts"
      *   Or use "uuidv4" from "uuid"
      */
+    const host = req.headers.host
+    const email = req.body.email
+
+    // Check if input data is valid
+    if (!email || !host) {
+        res.status(400).json(
+            getResponse(
+                null,
+                StatusCodes.INVALID_DATA_FORMAT
+            )
+        )
+        return
+    }
+
+    // Register the new user
+    const { status, user, httpCode } = registerNewUser(
+        email,
+        host
+    )
+    res.status(httpCode).json(getResponse(user, status))
 })
 
 router.get("/users", (req, res) => {
@@ -40,14 +58,26 @@ router.get("/users", (req, res) => {
     res.json(getResponse(ret))
 })
 
-router.get("/protected", (req, res) => {
+router.get("/protected", validateKey, (req, res) => {
     /**
-     * TODO
-     *
      * - This is a protected route. It requires the api key to be successful
      * - Obtain fields "host" and "x-api-key" from header
      * - Fields should not be missing or empty
      * - Fails when api key is invalid i.e api-key and "host" combination is bad
      * - (Optional) Fails when the "/protected" route has been queried more than the daily limit
      */
+    const host = req.headers.host
+    const apiKey = req.header("x-api-key")
+
+    const status = incrementNumUsagesToday(apiKey, host)
+    if (!isStatusValid(status)) {
+        // Control shouldn't reach here,
+        // This means that a request was able to get past
+        // the api-key validation using a bad api-key
+        res.status(401).json(getResponse(null, status))
+        return
+    }
+
+    const ret = { msg: "This is protected data" }
+    res.json(getResponse(ret))
 })

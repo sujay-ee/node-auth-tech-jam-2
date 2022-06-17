@@ -46,6 +46,6 @@ Make the tests pass in `jwtVerifier.test.js`.
 
 There are 2 tests here - 
 
-1. Verify if the incoming token is _expired_ or not.
+1. Verify if the incoming token is _expired_ or not.  _Dev help_: In javascript, to get epoch time, you can use `getTime()` function on the `Date` object.
 2. Verify if the `clientId` matches the expected `clientId` that the server expects.
 3. Verify and assert on additional _claim_ named `v1`.

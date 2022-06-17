@@ -63,7 +63,7 @@ Authorization: Basic <base64 email:password>
 - On a protected route, the header is formatted as,
 
 ```
-Authorization: Basic <token>
+Authorization: Bearer <token>
 ```
 
 -   More info on JWT auth [here](https://jwt.io/introduction), [here](https://blog.logrocket.com/jwt-authentication-best-practices/) and [here](https://www.freecodecamp.org/news/securing-node-js-restful-apis-with-json-web-tokens-9f811a92bb52/)

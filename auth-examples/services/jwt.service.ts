@@ -110,7 +110,7 @@ export async function signIn(
 }
 
 export function validateJwt(req, res, next) {
-    var jwtToken = req.headers.authorization
+    let jwtToken = req.headers.authorization;
 
     // Token doesn't exist
     if (!jwtToken) {

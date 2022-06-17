@@ -4,8 +4,8 @@ import { jwtUsers as users } from "../shared/data"
 import { mockJwtUsers } from "./mock-data"
 
 describe("POST /register", () => {
-    var app: Express.Application
-    var numUsers = 0
+    let app: Express.Application
+    let numUsers = 0
 
     const url = "/jwt/register"
 
@@ -65,8 +65,8 @@ describe("POST /register", () => {
 })
 
 describe("POST /signin", () => {
-    var app: Express.Application
-    var numUsers = 0
+    let app: Express.Application
+    let numUsers = 0
 
     const url = "/jwt/signin"
 
@@ -136,8 +136,8 @@ describe("POST /signin", () => {
 })
 
 describe("GET /protected", () => {
-    var app: Express.Application
-    var numUsers = 0
+    let app: Express.Application
+    let numUsers = 0
 
     const url = "/jwt/protected"
 

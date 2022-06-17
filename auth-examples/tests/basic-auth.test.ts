@@ -4,8 +4,8 @@ import { basicAuthUsers as users } from "../shared/data"
 import { mockBasicAuthUsers } from "./mock-data"
 
 describe("POST /register", () => {
-    var app: Express.Application
-    var numUsers = 0
+    let app: Express.Application
+    let numUsers = 0
 
     const url = "/basicauth/register"
 
@@ -65,8 +65,8 @@ describe("POST /register", () => {
 })
 
 describe("GET /protected", () => {
-    var app: Express.Application
-    var numUsers = 0
+    let app: Express.Application
+    let numUsers = 0
 
     const url = "/basicauth/protected"
 

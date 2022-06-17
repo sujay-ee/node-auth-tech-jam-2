@@ -1,15 +1,22 @@
 # Auth Examples
 
-This directory contains code and excersices for api-key auth, basic auth and jwt auth
+This directory contains code and exercises for api-key auth, basic auth and jwt auth
 
 ## Exercises
 
-### API key based authenticaiton
+- The exercise involves filling up the missing implementation details in the `./routes` folder
+- You can verify if your implementation works properly by executing tests by calling
+```
+npm test
+```
 
--   An API key is a code used to identify and authenticate an application or user
--   API keys are commonly used to control the utilization of the API’s interface and track how it is being used. This is often as a precaution to prevent abuse or malicious use
--   API keys can be used to identify a specific project or the application making the call to the API. While API keys are not as secure as the tokens that provide authentication, they help identify the project or application that makes the call. This ensures they can also be used to designate usage information to a specific project and reject unauthorized access requests.
--   On a protected route, API key can be sent in the headers in the format
+### API key based authentication
+
+- An API key is a code used to identify and authenticate an application or user
+- API keys are commonly used to control the utilization of the API’s interface and track how it is being used. This is often as a precaution to prevent abuse or malicious use
+- API keys can be used to identify a specific project or the application making the call to the API. While API keys are not as secure as the tokens that provide authentication, they help identify the project or application that makes the call. This ensures they can also be used to designate usage information to a specific project and reject unauthorized access requests.
+- As a part of this exercise you'll have to resolve all TODO components in `routes/api-key.route.ts`. To complete this exercise you'll have to get all test cases from `api-key.test.ts` to pass
+- On a protected route, API key can be sent in the headers in the format
 
 ```
 x-api-key: <API-Key>
@@ -17,7 +24,7 @@ x-api-key: <API-Key>
 
 -   More info on API keys [here](https://www.fortinet.com/resources/cyberglossary/api-key) and [here](https://blog.stoplight.io/api-keys-best-practices-to-authenticate-apis)
 
-#### Sample user structure
+##### Sample user structure
 
 ```
 {
@@ -30,8 +37,9 @@ x-api-key: <API-Key>
 
 ### Basic Authentication
 
--   Basic Authentication is a method for an HTTP user agent (e.g., a web browser) to provide a username and password when making a request.
--   On a protected route, the header is formated as,
+- Basic Authentication is a method for an HTTP user agent (e.g., a web browser) to provide a username and password when making a request.
+- As a part of this exercise you'll have to resolve all TODO components in `routes/basic-auth.route.ts`. To complete this exercise you'll have to get all test cases from `basic-auth.test.ts` to pass
+- On a protected route, the header is formatted as,
 
 ```
 Authorization: Basic <base64 email:password>
@@ -50,8 +58,9 @@ Authorization: Basic <base64 email:password>
 
 ### JWT Authentication
 
--   JSON Web Token (JWT) is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object
--   On a protected route, the header is formated as,
+- JSON Web Token (JWT) is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object
+- As a part of this exercise you'll have to resolve all TODO components in `routes/jwt.route.ts`. To complete this exercise you'll have to get all test cases from `jwt.test.ts` to pass
+- On a protected route, the header is formatted as,
 
 ```
 Authorization: Basic <token>

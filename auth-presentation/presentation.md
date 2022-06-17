@@ -33,7 +33,7 @@
 <br />
 * **ROLL YOUR OWN JWT** - Server manages access tokens as JWT tokens in a custom format - similar to the API key solution but using JWT tokens.
 <br />
-* **OAuth** - ??? 
+* **OAuth** - Using an authentication/authorization flow based on the OAuth standard, usually using a cloud based identity solution provider like Okta, Auth0 etc.  
 
 ---
 

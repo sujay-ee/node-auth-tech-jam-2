@@ -5,6 +5,14 @@
 
 ---
 
+# API Authentication
+
+* What does _authentication_ for an API mean ?
+<br />
+* What does _authorization_ for an API mean ?
+
+---
+
 # Authentication vs Authorization ?
 
 ---
@@ -33,6 +41,7 @@
 
 ## Probable use case
 * server-to-server
+* client-to-server - only when there's a strong trust relationship already
 
 ## Pros
 
@@ -66,7 +75,7 @@
 
 ## Probable use case
 * server-to-server
-* client-to-server - only when your implementation is mature enough to handle public clients, or you trust them (private clients)
+* client-to-server - only when your implementation is mature enough to handle public clients, or there's a strong trust relationship
 
 ## Pros
 
